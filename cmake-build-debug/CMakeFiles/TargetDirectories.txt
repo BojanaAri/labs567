@@ -1,0 +1,3 @@
+C:/Users/Bojana/Desktop/labs/cmake-build-debug/CMakeFiles/labs.dir
+C:/Users/Bojana/Desktop/labs/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Bojana/Desktop/labs/cmake-build-debug/CMakeFiles/rebuild_cache.dir
