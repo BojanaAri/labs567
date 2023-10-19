@@ -131,6 +131,18 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        if (camera.isJumping){
+            camera.jump(deltaTime);
+        }
+        if (camera.isFalling){
+            camera.ProcessFalling(deltaTime);
+        }
+        if (camera.isCrouching){
+            camera.Crouching(deltaTime);
+        }
+        if (camera.isStandingUp){
+            camera.StandingUp(deltaTime);
+        }
 
 
         // activate shader
@@ -156,7 +168,7 @@ int main() {
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 
         float angle = -90.0f;
-        model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 0.0f, 0.01f));
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 0.0f, 0.1f));
         ourShader.setMat4("model", model);
 
 
@@ -175,6 +187,7 @@ int main() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
+
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
@@ -197,6 +210,12 @@ void processInput(GLFWwindow *window) {
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        camera.ProcessKeyboard(JUMP, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        camera.ProcessKeyboard(CROUCH, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
+        camera.ProcessKeyboard(STAND_UP, deltaTime);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback
