@@ -1,0 +1,22 @@
+# ninja log v5
+2	2031	7194093121803182	CMakeFiles/OpenGLPrj.dir/src/Camera.cpp.obj	f5490f6d40025ac9
+10	2228	7194093123827686	CMakeFiles/OpenGLPrj.dir/src/Shader.cpp.obj	4ab6e6ae59d42e3c
+16	2337	7194093124866500	CMakeFiles/OpenGLPrj.dir/vendor/glad/src/glad.c.obj	93d8531535ebf1d2
+5	2340	7194094371810590	CMakeFiles/OpenGLPrj.dir/src/main.cpp.obj	2c188975e34a44db
+24	1880	7194096423635148	vendor/glfw/src/CMakeFiles/glfw.dir/init.c.obj	34cc27f75602bda0
+10	1912	7194096424037185	vendor/glfw/src/CMakeFiles/glfw.dir/context.c.obj	9a9e831dfbdcae9e
+19	1954	7194096424396840	vendor/glfw/src/CMakeFiles/glfw.dir/monitor.c.obj	c46a61aa07bd2f53
+30	1963	7194096424396840	vendor/glfw/src/CMakeFiles/glfw.dir/win32_init.c.obj	88dbd0d426a524f1
+34	2019	7194096425156014	vendor/glfw/src/CMakeFiles/glfw.dir/window.c.obj	41afafbe2f98cbb9
+15	2075	7194096425480607	vendor/glfw/src/CMakeFiles/glfw.dir/input.c.obj	d8082927d0617485
+1913	3255	7194096437498496	vendor/glfw/src/CMakeFiles/glfw.dir/vulkan.c.obj	3184c2642ea5d407
+1963	3266	7194096437647571	vendor/glfw/src/CMakeFiles/glfw.dir/win32_time.c.obj	3d36cf498abdd956
+2019	3367	7194096438690588	vendor/glfw/src/CMakeFiles/glfw.dir/win32_monitor.c.obj	5a9281815b00b2a2
+1955	3392	7194096438890092	vendor/glfw/src/CMakeFiles/glfw.dir/osmesa_context.c.obj	7006b3f65e3c9e66
+1881	3425	7194096439253070	vendor/glfw/src/CMakeFiles/glfw.dir/win32_joystick.c.obj	bf6b57feb93e02fb
+2075	3544	7194096440472673	vendor/glfw/src/CMakeFiles/glfw.dir/win32_thread.c.obj	da4eceeba6ae1a2d
+3267	4356	7194096448584402	vendor/glfw/src/CMakeFiles/glfw.dir/wgl_context.c.obj	7bcbd171a0fd7409
+3367	4450	7194096449541086	vendor/glfw/src/CMakeFiles/glfw.dir/egl_context.c.obj	394bc82d8563a2f5
+3255	4516	7194096450185136	vendor/glfw/src/CMakeFiles/glfw.dir/win32_window.c.obj	a340c026fded0628
+4516	4633	7194096451354377	vendor/glfw/src/libglfw3.a	c5745d46bb8ae797
+4633	4977	7194096454102931	OpenGLPrj/bin/OpenGLPrj.exe	cef8126977c82df4
