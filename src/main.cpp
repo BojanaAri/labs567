@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <string>
+#define _USE_MATH_DEFINES
 #include <vector>
 
 const std::string program_name = ("Transformation basics");
@@ -16,6 +17,17 @@ void processInput(GLFWwindow *window);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 800;
+
+static float x_pos = 0.0f;
+static float y_pos = 0.0f;
+static glm::vec3 posRotate = glm::vec3(0.0f, 0.0f, 1.0f);
+static glm::vec3 posTransform = glm::vec3(0.0f, 0.0f, 1.0f);
+static float radians = 10.0f;
+
+// timing
+static float deltaTime = 0.0f; // time between current frame and last frame
+static float lastFrame = 0.0f;
+
 
 int main() {
     // glfw: initialize and configure
@@ -62,110 +74,77 @@ int main() {
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    float vertices[] = {
-            -0.5f, -0.5f, -0.5f, 0.2f, 0.0f, 0.0f,
-            0.5f,  -0.5f, -0.5f,   0.4f, 0.0f, 0.0f,
-            0.5f,  0.5f,  -0.5f, 0.6f, 0.0f, 0.0f,
-            0.5f,  0.5f,  -0.5f, 0.8f, 0.0f, 0.0f,
-            -0.5f, 0.5f,  -0.5f, 1.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f, 1.0f, 0.2f, 0.0f,
+    std::vector<float> vertices;
+    vertices.push_back(0.0f);
+    vertices.push_back(0.0f);
+    vertices.push_back(0.0f);
 
-            -0.5f, -0.5f, 0.5f,   1.0f, 0.4f, 0.0f,
-            0.5f,  -0.5f, 0.5f,1.0f, 0.6f, 0.0f,
-            0.5f,  0.5f,  0.5f,1.0f, 0.8f, 0.0f,
-            0.5f,  0.5f,  0.5f,1.0f, 1.0f, 0.0f,
-            -0.5f, 0.5f,  0.5f,1.0f, 0.0f, 0.2f,
-            -0.5f, -0.5f, 0.5f,1.0f, 1.0f, 0.4f,
 
-            -0.5f, 0.5f,  0.5f,1.0f, 0.0f, 0.8f,
-            -0.5f, 0.5f,  -0.5f,0.0f, 1.0f, 0.2f,
-            -0.5f, -0.5f, -0.5f,1.0f, 0.2f, 1.0f,
-            -0.5f, -0.5f, -0.5f, 0.2f, 0.6f, 1.0f,
-            -0.5f, -0.5f, 0.5f,0.0f, 0.4f, 1.0f,
-            -0.5f, 0.5f,  0.5f,1.0f, 0.2f, 1.0f,
+    float angle = 0.0f;
+    int numberOfAngles = 40; // 120 stepeni
+    float radius = 0.2f;
+    float increment = 2 * 3.14 / numberOfAngles;
+    float x,y,z=0.0f;
 
-            0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f,
-            0.5f,  0.5f,  -0.5f,0.8f, 0.2f, 0.0f,
-            0.5f,  -0.5f, -0.5f,0.6f, 0.4f, 1.0f,
-            0.5f,  -0.5f, -0.5f,0.4f, 0.6f, 1.0f,
-            0.5f,  -0.5f, 0.5f,0.2f, 0.8f, 1.0f,
-            0.5f,  0.5f,  0.5f,0.0f, 1.0f, 1.0f,
+    for(int i=0;i<numberOfAngles-3;i++)
+    {
+        x = radius * cos(angle);
+        y = radius * sin(angle);
+        vertices.push_back(x);
+        vertices.push_back(y);
+        vertices.push_back(z);
 
-            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.8f,
-            0.5f,  -0.5f, -0.5f,0.0f, 1.0f, 0.6f,
-            0.5f,  -0.5f, 0.5f,0.0f, 1.0f, 0.4f,
-            0.5f,  -0.5f, 0.5f,0.0f, 1.0f, 0.2f,
-            -0.5f, -0.5f, 0.5f,0.0f, 1.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f,0.0f, 1.0f, 0.0f,
+        angle+=increment;
+    }
 
-            -0.5f, 0.5f,  -0.5f, 0.0f, 0.0f, 0.2f,
-            0.5f,  0.5f,  -0.5f,0.0f, 0.0f, 0.4f,
-            0.5f,  0.5f,  0.5f,0.0f, 0.0f, 0.6f,
-            0.5f,  0.5f,  0.5f,0.0f, 0.0f, 0.8f,
-            -0.5f, 0.5f,  0.5f,0.0f, 0.0f, 1.0f,
-            -0.5f, 0.5f,  -0.5f, 0.2f, 0.2f, 0.2f
-    };
-
-    unsigned int VBO, VAO, EBO;
+    unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+
 
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
+
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
                           static_cast<void *>(nullptr));
     glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
-                          static_cast<void *>(nullptr));
-    glEnableVertexAttribArray(1);
-
-
-    glEnable(GL_DEPTH_TEST);
 
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window)) {
+
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+        // input
+        // -----
         processInput(window);
 
         // render
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-        // activate shader
-        ourShader.use();
+        // bind textures on corresponding texture units
 
         // create transformations
-        glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 view = glm::mat4(1.0f);
-        glm::mat4 projection = glm::mat4(1.0f);
-        model = model =
-                glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f),
-                            glm::vec3(0.5f, 1.0f, 0.0f));
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-        projection =
-                glm::perspective(glm::radians(45.0f),
-                                 (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        // retrieve the matrix uniform locations
-        unsigned int modelLoc = glGetUniformLocation(ourShader.ID, "model");
-        unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
-        // pass them to the shaders (3 different ways)
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
-        // note: currently we set the projection matrix each frame, but since the
-        // projection matrix rarely changes it's often best practice to set it
-        // outside the main loop only once.
-        ourShader.setMat4("projection", projection);
+        glm::mat4 transform = glm::mat4(1.0f);
+        transform = glm::translate(transform, glm::vec3(x_pos, y_pos, 0.0f));
+        transform = glm::rotate(transform, glm::radians(radians), posRotate);
+
+        // render container
+        ourShader.use();
+
+        unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
         // render container
         glBindVertexArray(VAO);
-
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, numberOfAngles+1);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved
         // etc.)
@@ -178,7 +157,6 @@ int main() {
     // ------------------------------------------------------------------------
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
@@ -192,6 +170,25 @@ int main() {
 void processInput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    float cameraSpeed = 2.5f * deltaTime;
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        radians = 98.0f;
+        y_pos += cameraSpeed * 0.1f;
+    }
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        radians = -85.0f;
+        y_pos -= cameraSpeed * 0.1f;
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+    {
+        radians = -100.0f;
+        x_pos -= cameraSpeed * 0.1f;
+    }
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        radians = 10.0f;
+        x_pos += cameraSpeed * 0.1f;
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback
