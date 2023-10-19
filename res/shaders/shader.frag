@@ -1,9 +1,8 @@
 #version 330 core
 out vec4 FragColor;
 
-in vec4 color;
 void main()
 {
-        // linearly interpolate between both textures (80% container, 20% awesomeface)
-        FragColor = color;
+
+        FragColor = vec4( 0.0f, 1.0f, 1.0f, 1.0f);
 }

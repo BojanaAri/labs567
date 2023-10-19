@@ -62,49 +62,43 @@ int main() {
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    float vertices[] = {
-            -0.5f, -0.5f, -0.5f, 0.2f, 0.0f, 0.0f,
-            0.5f,  -0.5f, -0.5f,   0.4f, 0.0f, 0.0f,
-            0.5f,  0.5f,  -0.5f, 0.6f, 0.0f, 0.0f,
-            0.5f,  0.5f,  -0.5f, 0.8f, 0.0f, 0.0f,
-            -0.5f, 0.5f,  -0.5f, 1.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f, 1.0f, 0.2f, 0.0f,
 
-            -0.5f, -0.5f, 0.5f,   1.0f, 0.4f, 0.0f,
-            0.5f,  -0.5f, 0.5f,1.0f, 0.6f, 0.0f,
-            0.5f,  0.5f,  0.5f,1.0f, 0.8f, 0.0f,
-            0.5f,  0.5f,  0.5f,1.0f, 1.0f, 0.0f,
-            -0.5f, 0.5f,  0.5f,1.0f, 0.0f, 0.2f,
-            -0.5f, -0.5f, 0.5f,1.0f, 1.0f, 0.4f,
+    std::vector<float> vertices;
 
-            -0.5f, 0.5f,  0.5f,1.0f, 0.0f, 0.8f,
-            -0.5f, 0.5f,  -0.5f,0.0f, 1.0f, 0.2f,
-            -0.5f, -0.5f, -0.5f,1.0f, 0.2f, 1.0f,
-            -0.5f, -0.5f, -0.5f, 0.2f, 0.6f, 1.0f,
-            -0.5f, -0.5f, 0.5f,0.0f, 0.4f, 1.0f,
-            -0.5f, 0.5f,  0.5f,1.0f, 0.2f, 1.0f,
+    float omega = 0.0f, phi = 0.0f;
+    int longitude = 18, latitude = 36;
+    float radius = 0.5f;
+    float latINC = 2 * 3.14 / latitude; // sector
+    float longINC = 3.14 / longitude;
+    float x,y,z,nz, nphi, xy;
 
-            0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f,
-            0.5f,  0.5f,  -0.5f,0.8f, 0.2f, 0.0f,
-            0.5f,  -0.5f, -0.5f,0.6f, 0.4f, 1.0f,
-            0.5f,  -0.5f, -0.5f,0.4f, 0.6f, 1.0f,
-            0.5f,  -0.5f, 0.5f,0.2f, 0.8f, 1.0f,
-            0.5f,  0.5f,  0.5f,0.0f, 1.0f, 1.0f,
+    for(int i=0;i<=longitude;i++)
+    {
+        phi = 3.14 / 2 - i*longINC;
+        xy = radius * cos(phi);
+        z = radius * sin(phi);
 
-            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.8f,
-            0.5f,  -0.5f, -0.5f,0.0f, 1.0f, 0.6f,
-            0.5f,  -0.5f, 0.5f,0.0f, 1.0f, 0.4f,
-            0.5f,  -0.5f, 0.5f,0.0f, 1.0f, 0.2f,
-            -0.5f, -0.5f, 0.5f,0.0f, 1.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f,0.0f, 1.0f, 0.0f,
+        for(int j=0; j<=latitude; j++)
+        {
+            omega = j * latINC;
+            x = xy * cos(omega);
+            y = xy * sin(omega);
+            vertices.push_back(x);
+            vertices.push_back(y);
+            vertices.push_back(z);
 
-            -0.5f, 0.5f,  -0.5f, 0.0f, 0.0f, 0.2f,
-            0.5f,  0.5f,  -0.5f,0.0f, 0.0f, 0.4f,
-            0.5f,  0.5f,  0.5f,0.0f, 0.0f, 0.6f,
-            0.5f,  0.5f,  0.5f,0.0f, 0.0f, 0.8f,
-            -0.5f, 0.5f,  0.5f,0.0f, 0.0f, 1.0f,
-            -0.5f, 0.5f,  -0.5f, 0.2f, 0.2f, 0.2f
-    };
+            if( (i!=0 && (j == 0 || j == latitude)) && (i != longitude && (j == 18 || j == 19)))
+            {
+                nphi = 3.14 / 2 - i * longINC;
+                nz = radius * sin(nphi);
+                vertices.push_back(x);
+                vertices.push_back(y);
+                vertices.push_back(nz);
+                std::cout<<i<<" "<<omega<<std::endl;
+            }
+        }
+    }
+
 
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
@@ -113,19 +107,13 @@ int main() {
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
                           static_cast<void *>(nullptr));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
-                          static_cast<void *>(nullptr));
-    glEnableVertexAttribArray(1);
-
-
-    glEnable(GL_DEPTH_TEST);
 
     // render loop
     // -----------
@@ -135,7 +123,7 @@ int main() {
         // render
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
 
         // activate shader
         ourShader.use();
@@ -165,7 +153,7 @@ int main() {
         // render container
         glBindVertexArray(VAO);
 
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, (longitude+latitude)*13);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved
         // etc.)
